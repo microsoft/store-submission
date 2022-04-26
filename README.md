@@ -58,13 +58,7 @@ on:
 jobs:
   start-store-submission:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          path: "."
-
       - name: Configure Store Credentials
         uses: microsoft/store-submission@v1
         with:
@@ -76,40 +70,14 @@ jobs:
           client-id: ${{ secrets.CLIENT_ID }}
           client-secret: ${{ secrets.CLIENT_SECRET }}
 
-      - name: Get existing draft submission
-        id: getSubmission
-        uses: microsoft/store-submission@v1
-        with:
-          command: get
-
-      - name: Save JSON
-        run: echo '${{ steps.getSubmission.outputs.draft-submission }}' >> draft.json
-
-      - name: Install JQ
-        run: sudo apt-get install jq
-
-      - name: Update JSON
-        run: jq '.packages[0].packageUrl = $packageUrl' draft.json --arg packageUrl 'https://cdn.contoso.us/prod/5.10.1.4420/ContosoIgniteInstallerFull.msi' > updatedDraft.json
-
-      - name: Update draft variable
-        id: getUpdatedSubmission
-        run: echo ::set-output name=updatedSubmission::$(cat updatedDraft.json)
-
-      - name: Update draft submission
+      - name: Update Draft Submission
         uses: microsoft/store-submission@v1
         with:
           command: update
-          product-update: ${{ steps.getUpdatedSubmission.outputs.updatedSubmission }}
+          product-update: '{"packages":[{"packageUrl":"https://cdn.contoso.us/prod/5.10.1.4420/ContosoIgniteInstallerFull.msi","languages":["en"],"architectures":["X64"],"isSilentInstall":true}]}'
 
-      - name: Publish submission
-        id: publishSubmission
+      - name: Publish Submission
         uses: microsoft/store-submission@v1
         with: 
           command: publish
-
-      - name: Polling Submission
-        uses: microsoft/store-submission@v1
-        with:
-          command: poll
-          polling-submission-id: ${{ steps.publishSubmission.outputs.polling-submission-id }}
 ```
