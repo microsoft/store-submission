@@ -1,4 +1,5 @@
-#
+# Microsoft Store Submission
+
 This is a GitHub Action to update EXE and MSI apps in the Microsoft Store.
 
 ## Quick start
