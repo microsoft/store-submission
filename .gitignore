@@ -130,3 +130,8 @@ out
 
 # act-cli
 .secrets
+
+# VSIXs
+*.vsix
+submission-task/exec-child.js
+submission-task/lib.json

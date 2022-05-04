@@ -7,7 +7,8 @@
   "author": "Microsoft",
   "license": "MIT",
   "scripts": {
-    "build": "tsc && ncc build lib/github_action.js",
+    "build": "tsc && ncc build lib/github_action.js && ncc build lib/azure_devops_task.js -o submission-task",
+    "package": "tfx extension create --manifest-globs vss-extension.json",
     "format": "prettier --write **/*.ts"
   },
   "devDependencies": {
@@ -19,6 +20,7 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
-    "@actions/core": "^1.7.0"
+    "@actions/core": "^1.7.0",
+    "azure-pipelines-task-lib": "^3.2.0"
   }
 }

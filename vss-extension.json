@@ -1,0 +1,41 @@
+{
+    "manifestVersion": 1,
+    "id": "microsoft-store-win32-release-task",
+    "name": "Microsoft Store Win32 Release Tasks",
+    "version": "0.1.0",
+    "publisher": "Microsoft",
+    "public": false,
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],    
+    "description": "Tools for managing and releasing updates for Win32 apps to the Microsoft Store.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "images/extension-icon.png"
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/Microsoft/store-submission"
+    },
+    "files": [
+        {
+            "path": "submission-task"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "microsoft-store-win32-submissions-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "submission-task"
+            }
+        }
+    ]
+}
