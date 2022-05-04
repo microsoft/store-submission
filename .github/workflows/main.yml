@@ -18,5 +18,14 @@ jobs:
           node-version: 16.x
       - name: Install dependencies
         run: npm ci
+      - name: Install TFX
+        run: npm install -g tfx-cli
       - name: Build
         run: npm run build
+      - name: Package ADO Task
+        run: npm run package
+      - name: Publish ADO Task
+        uses: actions/upload-artifact@v3
+        with:
+          name: ado-task
+          path: Microsoft.microsoft-store-win32-release-task-*.vsix
