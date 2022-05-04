@@ -1,0 +1,122 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "dc557d64-6cdc-4687-86b3-af66d2120fb4",
+    "name": "MicrosoftStoreWin32Submissions",
+    "friendlyName": "MicrosoftStoreWin32Submissions",
+    "description": "Microsoft Store Task for submitting updates to Win32 Apps",
+    "helpMarkDown": "",
+    "category": "Utility",
+    "author": "Microsoft",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Microsoft Store Submission Task",
+    "inputs": [
+        {
+            "name": "type",
+            "type": "pickList",
+            "label": "The type of Store Application. Available options are: `packaged` or `win32`",
+            "defaultValue": "packaged",
+            "required": false,
+            "helpMarkDown": "The type of Store Application. Available options are: `packaged` or `win32`",
+            "options": {
+                "packaged": "Packaged",
+                "win32": "Win32"
+            }
+        },
+        {
+            "name": "command",
+            "type": "pickList",
+            "label": "The command to execute. Available command: `configure`, `get`, `update`, `poll`, or `publish`.",
+            "defaultValue": "configure",
+            "required": false,
+            "helpMarkDown": "The command to execute. Available command: `configure`, `get`, `update`, `poll`, or `publish`.",
+            "options": {
+                "configure": "Configure",
+                "get": "Get",
+                "update": "Update",
+                "poll": "Poll",
+                "publish": "Publish"
+            }
+        },
+        {
+            "name": "sellerId",
+            "type": "string",
+            "label": "Seller Id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Seller Id"
+        },
+        {
+            "name": "productId",
+            "type": "string",
+            "label": "Product Id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Product Id"
+        },
+        {
+            "name": "tenantId",
+            "type": "string",
+            "label": "AAD Tenant Id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "AAD Tenant Id"
+        },
+        {
+            "name": "clientId",
+            "type": "string",
+            "label": "App Client Id",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "App Client Id"
+        },
+        {
+            "name": "clientSecret",
+            "type": "string",
+            "label": "App Client secret",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "App Client secret"
+        },
+        {
+            "name": "moduleName",
+            "type": "string",
+            "label": "Indicates which module should be queried from the current draft (listing, properties or availability)",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Indicates which module should be queried from the current draft (listing, properties or availability)"
+        },
+        {
+            "name": "listingLanguage",
+            "type": "string",
+            "label": "Indicates which listing language should be queries from the current draft",
+            "defaultValue": "en",
+            "required": false,
+            "helpMarkDown": "Indicates which listing language should be queries from the current draft"
+        },
+        {
+            "name": "productUpdate",
+            "type": "string",
+            "label": "The Json to upload the package data",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Json to upload the package data"
+        },
+        {
+            "name": "pollingSubmissionId",
+            "type": "string",
+            "label": "The Id of the active submission being processed",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The Id of the active submission being processed"
+        }
+    ],
+    "execution": {
+        "Node10": {
+            "target": "index.js"
+        }
+    }
+}
