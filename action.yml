@@ -1,0 +1,53 @@
+name: 'Microsoft Store Publish'
+author: 'Microsoft'
+description: 'Submit a package to the Microsoft Store'
+branding:
+  icon: 'upload-cloud'
+  color: 'blue'
+inputs:
+  type:
+    description: 'The type of Store Application. Available options are: `packaged` or `win32`'
+    required: false
+    default: 'packaged'
+  command:
+    description: 'The command to execute. Available command: `configure`, `get`, `update`, `poll`, or `publish`.'
+    required: false
+    default: 'configure'
+  seller-id:
+    description: 'Seller Id'
+    required: false
+  product-id:
+    description: 'Product Id'
+    required: false
+  tenant-id:
+    description: 'AAD Tenant Id'
+    required: false
+  client-id:
+    description: 'App Client Id'
+    required: false
+  client-secret:
+    description: 'App Client secret'
+    required: false
+  module-name:
+    description: 'Indicates which module should be queried from the current draft (listing, properties or availability)'
+    required: false
+  listing-language:
+    description: 'Indicates which listing language should be queries from the current draft'
+    required: false
+    default: 'en'
+  product-update:
+    description: 'The Json to upload the package data'
+    required: false
+  polling-submission-id:
+    description: 'The Id of the active submission being processed'
+    required: false
+outputs:
+  draft-submission:
+    description: 'The existing draft of the product specified'
+  submission-status:
+    description: 'The status of the submission'
+  polling-submission-id:
+    description: 'The Id of the active submission being processed'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
