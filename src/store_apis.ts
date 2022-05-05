@@ -49,7 +49,7 @@ export class StoreApis {
   private static readonly scope =
     "https://api.store-int.microsoft.com/.default";
   private static readonly storeApiUrl = "api.store-int.microsoft.com";
-  // private static readonly storeApiUrl = 'https://api.store.microsoft.com'
+  // private static readonly storeApiUrl = 'api.store.microsoft.com'
 
   constructor() {
     this.LoadState();

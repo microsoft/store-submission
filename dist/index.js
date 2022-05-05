@@ -66,11 +66,13 @@ const store_apis_1 = __nccwpck_require__(605);
                     core.setSecret(storeApis.clientId);
                     core.setSecret(storeApis.clientSecret);
                     core.setSecret(storeApis.accessToken);
+                    break;
                 case "get":
                     let moduleName = core.getInput("module-name");
                     let listingLanguage = core.getInput("listing-language");
                     let draftSubmission = yield storeApis.GetExistingDraft(moduleName, listingLanguage);
                     core.setOutput("draft-submission", draftSubmission);
+                    break;
                 case "update":
                     let updatedProductString = core.getInput("product-update");
                     if (!updatedProductString) {
@@ -79,6 +81,7 @@ const store_apis_1 = __nccwpck_require__(605);
                     }
                     let updateSubmissionData = yield storeApis.UpdateProductPackages(updatedProductString);
                     console.log(updateSubmissionData);
+                    break;
                 case "poll":
                     let pollingSubmissionId = core.getInput("polling-submission-id");
                     if (!pollingSubmissionId) {
@@ -87,11 +90,14 @@ const store_apis_1 = __nccwpck_require__(605);
                     }
                     let publishingStatus = yield storeApis.PollSubmissionStatus(pollingSubmissionId);
                     core.setOutput("submission-status", publishingStatus);
+                    break;
                 case "publish":
                     let submissionId = yield storeApis.PublishSubmission();
                     core.setOutput("polling-submission-id", submissionId);
+                    break;
                 default:
                     core.setFailed(`Unknown command - ("${command}").`);
+                    break;
             }
         }
         catch (error) {
@@ -266,7 +272,7 @@ class SubmissionStatus {
     }
 }
 class StoreApis {
-    // private static readonly storeApiUrl = 'https://api.store.microsoft.com'
+    // private static readonly storeApiUrl = 'api.store.microsoft.com'
     constructor() {
         Object.defineProperty(this, "accessToken", {
             enumerable: true,

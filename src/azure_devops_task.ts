@@ -53,6 +53,8 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           true
         );
 
+        break;
+
       case "get":
         let moduleName = tl.getInput("moduleName") || "";
         let listingLanguage = tl.getInput("listingLanguage")!;
@@ -61,6 +63,8 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           listingLanguage
         );
         tl.setVariable("draftSubmission", draftSubmission.toString());
+
+        break;
 
       case "update":
         let updatedProductString = tl.getInput("productUpdate");
@@ -76,6 +80,8 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           updatedProductString
         );
         console.log(updateSubmissionData);
+
+        break;
 
       case "poll":
         let pollingSubmissionId = tl.getInput("pollingSubmissionId");
@@ -93,12 +99,18 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         );
         tl.setVariable("submissionStatus", publishingStatus);
 
+        break;
+
       case "publish":
         let submissionId = await storeApis.PublishSubmission();
         tl.setVariable("pollingSubmissionId", submissionId);
 
+        break;
+
       default:
         tl.setResult(tl.TaskResult.Failed, `Unknown command - ("${command}").`);
+
+        break;
     }
   } catch (error: any) {
     tl.setResult(tl.TaskResult.Failed, error);

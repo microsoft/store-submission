@@ -37,11 +37,13 @@ const store_apis_1 = __nccwpck_require__(7605);
                     tl.setVariable(`${store_apis_1.EnvVariablePrefix}client_id`, storeApis.clientId, true, true);
                     tl.setVariable(`${store_apis_1.EnvVariablePrefix}client_secret`, storeApis.clientSecret, true, true);
                     tl.setVariable(`${store_apis_1.EnvVariablePrefix}access_token`, storeApis.accessToken, true, true);
+                    break;
                 case "get":
                     let moduleName = tl.getInput("moduleName") || "";
                     let listingLanguage = tl.getInput("listingLanguage");
                     let draftSubmission = yield storeApis.GetExistingDraft(moduleName, listingLanguage);
                     tl.setVariable("draftSubmission", draftSubmission.toString());
+                    break;
                 case "update":
                     let updatedProductString = tl.getInput("productUpdate");
                     if (!updatedProductString) {
@@ -50,6 +52,7 @@ const store_apis_1 = __nccwpck_require__(7605);
                     }
                     let updateSubmissionData = yield storeApis.UpdateProductPackages(updatedProductString);
                     console.log(updateSubmissionData);
+                    break;
                 case "poll":
                     let pollingSubmissionId = tl.getInput("pollingSubmissionId");
                     if (!pollingSubmissionId) {
@@ -58,11 +61,14 @@ const store_apis_1 = __nccwpck_require__(7605);
                     }
                     let publishingStatus = yield storeApis.PollSubmissionStatus(pollingSubmissionId);
                     tl.setVariable("submissionStatus", publishingStatus);
+                    break;
                 case "publish":
                     let submissionId = yield storeApis.PublishSubmission();
                     tl.setVariable("pollingSubmissionId", submissionId);
+                    break;
                 default:
                     tl.setResult(tl.TaskResult.Failed, `Unknown command - ("${command}").`);
+                    break;
             }
         }
         catch (error) {
@@ -237,7 +243,7 @@ class SubmissionStatus {
     }
 }
 class StoreApis {
-    // private static readonly storeApiUrl = 'https://api.store.microsoft.com'
+    // private static readonly storeApiUrl = 'api.store.microsoft.com'
     constructor() {
         Object.defineProperty(this, "accessToken", {
             enumerable: true,

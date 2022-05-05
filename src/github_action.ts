@@ -47,6 +47,8 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         core.setSecret(storeApis.clientSecret);
         core.setSecret(storeApis.accessToken);
 
+        break;
+
       case "get":
         let moduleName = core.getInput("module-name");
         let listingLanguage = core.getInput("listing-language");
@@ -55,6 +57,8 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           listingLanguage
         );
         core.setOutput("draft-submission", draftSubmission);
+
+        break;
 
       case "update":
         let updatedProductString = core.getInput("product-update");
@@ -67,6 +71,8 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           updatedProductString
         );
         console.log(updateSubmissionData);
+
+        break;
 
       case "poll":
         let pollingSubmissionId = core.getInput("polling-submission-id");
@@ -81,12 +87,19 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         );
         core.setOutput("submission-status", publishingStatus);
 
+        break;
+
       case "publish":
         let submissionId = await storeApis.PublishSubmission();
         core.setOutput("polling-submission-id", submissionId);
 
+        break;
+
       default:
         core.setFailed(`Unknown command - ("${command}").`);
+
+        break;
+        
     }
   } catch (error: any) {
     core.setFailed(error);
