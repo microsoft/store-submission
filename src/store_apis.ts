@@ -363,16 +363,19 @@ export class StoreApis {
 
     if (!updateSubmissionData.isSuccess) {
       return Promise.reject(
-        `Failed to update submission - ${updateSubmissionData.errors}`
+        `Failed to update submission - ${JSON.stringify(updateSubmissionData.errors)}`
       );
     }
+
+    console.log("Committing package changes...");
 
     let commitResult = await this.CommitUpdateStoreSubmissionPackages();
     if (!commitResult.isSuccess) {
       return Promise.reject(
-        `Failed to commit the updated submission - ${commitResult.errors}`
+        `Failed to commit the updated submission - ${JSON.stringify(commitResult.errors)}`
       );
     }
+    console.log(JSON.stringify(commitResult));
 
     return updateSubmissionData;
   }
