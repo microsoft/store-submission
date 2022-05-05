@@ -129,7 +129,7 @@ class ResponseWrapper {
             writable: true,
             value: void 0
         });
-        Object.defineProperty(this, "errorMessages", {
+        Object.defineProperty(this, "errors", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -146,6 +146,28 @@ class ErrorResponse {
             value: void 0
         });
         Object.defineProperty(this, "message", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
+}
+class Error {
+    constructor() {
+        Object.defineProperty(this, "code", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "message", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "target", {
             enumerable: true,
             configurable: true,
             writable: true,
@@ -308,12 +330,17 @@ class StoreApis {
     GetCurrentDraftSubmissionPackagesData() {
         return this.CreateStoreHttpRequest("", "GET", `/submission/v1/product/${this.productId}/packages`);
     }
-    GetCurrentDraftSubmissionMetadata(moduleName, listingLanguage) {
-        return this.CreateStoreHttpRequest("", "GET", `/submission/v1/product/${this.productId}/metadata?language=${listingLanguage}&elanguagelist=false`);
+    GetCurrentDraftSubmissionMetadata(moduleName, listingLanguages) {
+        return this.CreateStoreHttpRequest("", "GET", `/submission/v1/product/${this.productId}/metadata?languages=${listingLanguages}`);
     }
     UpdateStoreSubmissionPackages(submission) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.CreateStoreHttpRequest(JSON.stringify(submission), "PUT", `/submission/v1/product/${this.productId}/packages`);
+        });
+    }
+    CommitUpdateStoreSubmissionPackages() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.CreateStoreHttpRequest("", "POST", `/submission/v1/product/${this.productId}/packages/commit`);
         });
     }
     GetModuleStatus() {
@@ -349,7 +376,9 @@ class StoreApis {
                     if (res.statusCode == 404) {
                         let error = new ResponseWrapper();
                         error.isSuccess = false;
-                        error.errorMessages = ["Not Found"];
+                        error.errors = [];
+                        error.errors[0] = new Error();
+                        error.errors[0].message = "Not found";
                         reject(error);
                         return;
                     }
@@ -394,10 +423,18 @@ class StoreApis {
                 }
                 if (status.isReady) {
                     console.log("Success!");
-                    return;
+                    return true;
+                }
+                else {
+                    if (moduleStatus.errors &&
+                        moduleStatus.errors.length > 0 &&
+                        moduleStatus.errors.find((e) => e.target != "packages" || e.code == "packageuploaderror")) {
+                        console.log(moduleStatus.errors);
+                        return false;
+                    }
                 }
             }
-            return;
+            return false;
         });
     }
     InitAsync() {
@@ -420,7 +457,7 @@ class StoreApis {
                     }
                 })
                     .catch((error) => {
-                    reject(`Failed to get the existing draft. - ${error.errorMessages}`);
+                    reject(`Failed to get the existing draft. - ${error.errorS}`);
                 });
             }));
         });
@@ -466,14 +503,21 @@ class StoreApis {
             let updateSubmissionData = yield this.UpdateStoreSubmissionPackages(updatedProductPackages);
             console.log(JSON.stringify(updateSubmissionData));
             if (!updateSubmissionData.isSuccess) {
-                return Promise.reject(`Failed to update submission - ${updateSubmissionData.errorMessages}`);
+                return Promise.reject(`Failed to update submission - ${updateSubmissionData.errors}`);
+            }
+            let commitResult = yield this.CommitUpdateStoreSubmissionPackages();
+            if (!commitResult.isSuccess) {
+                return Promise.reject(`Failed to commit the updated submission - ${commitResult.errors}`);
             }
             return updateSubmissionData;
         });
     }
     PublishSubmission() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.PollModuleStatus(); // Wait until all modules are in the ready state
+            if (!(yield this.PollModuleStatus())) {
+                // Wait until all modules are in the ready state
+                return Promise.reject("Failed to poll module status.");
+            }
             let submissionId = null;
             let submitSubmissionResponse;
             submitSubmissionResponse = yield this.SubmitSubmission();

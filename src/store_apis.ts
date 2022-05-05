@@ -5,12 +5,18 @@ export let EnvVariablePrefix = "MICROSOFT_STORE_ACTION_";
 class ResponseWrapper<T> {
   responseData: T;
   isSuccess: boolean;
-  errorMessages: any;
+  errors: Error[];
 }
 
 class ErrorResponse {
   statusCode: number;
   message: string;
+}
+
+class Error {
+  code: string;
+  message: string;
+  target: string;
 }
 
 class SubmissionResponse {
@@ -124,12 +130,12 @@ export class StoreApis {
 
   public GetCurrentDraftSubmissionMetadata(
     moduleName: string,
-    listingLanguage: string
+    listingLanguages: string
   ): Promise<ResponseWrapper<any>> {
     return this.CreateStoreHttpRequest(
       "",
       "GET",
-      `/submission/v1/product/${this.productId}/metadata?language=${listingLanguage}&elanguagelist=false`
+      `/submission/v1/product/${this.productId}/metadata?languages=${listingLanguages}`
     );
   }
 
@@ -140,6 +146,16 @@ export class StoreApis {
       JSON.stringify(submission),
       "PUT",
       `/submission/v1/product/${this.productId}/packages`
+    );
+  }
+
+  public async CommitUpdateStoreSubmissionPackages(): Promise<
+    ResponseWrapper<any>
+  > {
+    return this.CreateStoreHttpRequest(
+      "",
+      "POST",
+      `/submission/v1/product/${this.productId}/packages/commit`
     );
   }
 
@@ -193,7 +209,9 @@ export class StoreApis {
         if (res.statusCode == 404) {
           let error = new ResponseWrapper();
           error.isSuccess = false;
-          error.errorMessages = ["Not Found"];
+          error.errors = [];
+          error.errors[0] = new Error();
+          error.errors[0].message = "Not found";
           reject(error);
           return;
         }
@@ -219,7 +237,7 @@ export class StoreApis {
     });
   }
 
-  public async PollModuleStatus(): Promise<unknown> {
+  public async PollModuleStatus(): Promise<boolean> {
     let status: ModuleStatus = new ModuleStatus();
     status.isReady = false;
 
@@ -244,11 +262,22 @@ export class StoreApis {
       }
       if (status.isReady) {
         console.log("Success!");
-        return;
+        return true;
+      } else {
+        if (
+          moduleStatus.errors &&
+          moduleStatus.errors.length > 0 &&
+          moduleStatus.errors.find(
+            (e) => e.target != "packages" || e.code == "packageuploaderror"
+          )
+        ) {
+          console.log(moduleStatus.errors);
+          return false;
+        }
       }
     }
 
-    return;
+    return false;
   }
 
   public async InitAsync() {
@@ -272,7 +301,7 @@ export class StoreApis {
           }
         })
         .catch((error: any) => {
-          reject(`Failed to get the existing draft. - ${error.errorMessages}`);
+          reject(`Failed to get the existing draft. - ${error.errorS}`);
         });
     });
   }
@@ -334,7 +363,14 @@ export class StoreApis {
 
     if (!updateSubmissionData.isSuccess) {
       return Promise.reject(
-        `Failed to update submission - ${updateSubmissionData.errorMessages}`
+        `Failed to update submission - ${updateSubmissionData.errors}`
+      );
+    }
+
+    let commitResult = await this.CommitUpdateStoreSubmissionPackages();
+    if (!commitResult.isSuccess) {
+      return Promise.reject(
+        `Failed to commit the updated submission - ${commitResult.errors}`
       );
     }
 
@@ -342,7 +378,10 @@ export class StoreApis {
   }
 
   public async PublishSubmission(): Promise<string> {
-    await this.PollModuleStatus(); // Wait until all modules are in the ready state
+    if (!(await this.PollModuleStatus())) {
+      // Wait until all modules are in the ready state
+      return Promise.reject("Failed to poll module status.");
+    }
 
     let submissionId: string | null = null;
 
