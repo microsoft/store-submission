@@ -47,6 +47,7 @@
             "label": "Seller Id",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = configure",
             "helpMarkDown": "Seller Id"
         },
         {
@@ -55,6 +56,7 @@
             "label": "Product Id",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = configure",
             "helpMarkDown": "Product Id"
         },
         {
@@ -63,6 +65,7 @@
             "label": "AAD Tenant Id",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = configure",
             "helpMarkDown": "AAD Tenant Id"
         },
         {
@@ -71,6 +74,7 @@
             "label": "App Client Id",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = configure",
             "helpMarkDown": "App Client Id"
         },
         {
@@ -79,15 +83,23 @@
             "label": "App Client secret",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = configure",
             "helpMarkDown": "App Client secret"
         },
         {
             "name": "moduleName",
-            "type": "string",
+            "type": "pickList",
             "label": "Indicates which module should be queried from the current draft (listing, properties or availability)",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Indicates which module should be queried from the current draft (listing, properties or availability)"
+            "visibleRule": "command = get",
+            "helpMarkDown": "Indicates which module should be queried from the current draft (listing, properties or availability)",
+            "options": {
+                "": "",
+                "listing": "Listing",
+                "properties": "Properties",
+                "availability": "Availability"
+            }
         },
         {
             "name": "listingLanguage",
@@ -95,6 +107,7 @@
             "label": "Indicates which listing language should be queries from the current draft",
             "defaultValue": "en",
             "required": false,
+            "visibleRule": "command = get",
             "helpMarkDown": "Indicates which listing language should be queries from the current draft"
         },
         {
@@ -103,6 +116,7 @@
             "label": "The Json to upload the package data",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = update",
             "helpMarkDown": "The Json to upload the package data"
         },
         {
@@ -111,6 +125,7 @@
             "label": "The Id of the active submission being processed",
             "defaultValue": "",
             "required": false,
+            "visibleRule": "command = poll",
             "helpMarkDown": "The Id of the active submission being processed"
         }
     ],
