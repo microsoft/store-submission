@@ -118,7 +118,7 @@ export class StoreApis {
     });
   }
 
-  public GetCurrentDraftSubmissionPackagesData(): Promise<
+  private GetCurrentDraftSubmissionPackagesData(): Promise<
     ResponseWrapper<any>
   > {
     return this.CreateStoreHttpRequest(
@@ -128,18 +128,18 @@ export class StoreApis {
     );
   }
 
-  public GetCurrentDraftSubmissionMetadata(
+  private GetCurrentDraftSubmissionMetadata(
     moduleName: string,
     listingLanguages: string
   ): Promise<ResponseWrapper<any>> {
     return this.CreateStoreHttpRequest(
       "",
       "GET",
-      `/submission/v1/product/${this.productId}/metadata?languages=${listingLanguages}`
+      `/submission/v1/product/${this.productId}/metadata/${moduleName}?languages=${listingLanguages}`
     );
   }
 
-  public async UpdateStoreSubmissionPackages(
+  private async UpdateStoreSubmissionPackages(
     submission: any
   ): Promise<ResponseWrapper<any>> {
     return this.CreateStoreHttpRequest(
@@ -149,7 +149,7 @@ export class StoreApis {
     );
   }
 
-  public async CommitUpdateStoreSubmissionPackages(): Promise<
+  private async CommitUpdateStoreSubmissionPackages(): Promise<
     ResponseWrapper<any>
   > {
     return this.CreateStoreHttpRequest(
@@ -159,7 +159,7 @@ export class StoreApis {
     );
   }
 
-  public async GetModuleStatus(): Promise<ResponseWrapper<ModuleStatus>> {
+  private async GetModuleStatus(): Promise<ResponseWrapper<ModuleStatus>> {
     return this.CreateStoreHttpRequest<ModuleStatus>(
       "",
       "GET",
@@ -167,7 +167,7 @@ export class StoreApis {
     );
   }
 
-  public async GetSubmissionStatus(
+  private async GetSubmissionStatus(
     submissionId: string
   ): Promise<ResponseWrapper<SubmissionStatus>> {
     return this.CreateStoreHttpRequest<SubmissionStatus>(
@@ -177,7 +177,7 @@ export class StoreApis {
     );
   }
 
-  public async SubmitSubmission(): Promise<
+  private async SubmitSubmission(): Promise<
     ResponseWrapper<SubmissionResponse>
   > {
     return this.CreateStoreHttpRequest<SubmissionResponse>(
@@ -187,7 +187,7 @@ export class StoreApis {
     );
   }
 
-  public async CreateStoreHttpRequest<T>(
+  private async CreateStoreHttpRequest<T>(
     requestParameters: string,
     method: string,
     path: string
@@ -237,7 +237,7 @@ export class StoreApis {
     });
   }
 
-  public async PollModuleStatus(): Promise<boolean> {
+  private async PollModuleStatus(): Promise<boolean> {
     let status: ModuleStatus = new ModuleStatus();
     status.isReady = false;
 
@@ -289,6 +289,17 @@ export class StoreApis {
     listingLanguage: string
   ): Promise<string> {
     return new Promise<string>(async (resolve, reject) => {
+      if (
+        moduleName.toLowerCase() != "availability" &&
+        moduleName.toLowerCase() != "listings" &&
+        moduleName.toLowerCase() != "properties"
+      ) {
+        reject(
+          "Module name must be 'availability', 'listings' or 'properties'"
+        );
+        return;
+      }
+
       await (moduleName
         ? this.GetCurrentDraftSubmissionMetadata(moduleName, listingLanguage)
         : this.GetCurrentDraftSubmissionPackagesData()
@@ -363,7 +374,9 @@ export class StoreApis {
 
     if (!updateSubmissionData.isSuccess) {
       return Promise.reject(
-        `Failed to update submission - ${JSON.stringify(updateSubmissionData.errors)}`
+        `Failed to update submission - ${JSON.stringify(
+          updateSubmissionData.errors
+        )}`
       );
     }
 
@@ -372,7 +385,9 @@ export class StoreApis {
     let commitResult = await this.CommitUpdateStoreSubmissionPackages();
     if (!commitResult.isSuccess) {
       return Promise.reject(
-        `Failed to commit the updated submission - ${JSON.stringify(commitResult.errors)}`
+        `Failed to commit the updated submission - ${JSON.stringify(
+          commitResult.errors
+        )}`
       );
     }
     console.log(JSON.stringify(commitResult));

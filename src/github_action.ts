@@ -99,7 +99,6 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         core.setFailed(`Unknown command - ("${command}").`);
 
         break;
-        
     }
   } catch (error: any) {
     core.setFailed(error);
