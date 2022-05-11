@@ -242,8 +242,6 @@ export class StoreApis {
     status.isReady = false;
 
     while (!status.isReady) {
-      console.log("Waiting 10 seconds.");
-      await this.Delay(10000);
       let moduleStatus = await this.GetModuleStatus();
       console.log(JSON.stringify(moduleStatus));
       status = moduleStatus.responseData;
@@ -275,6 +273,9 @@ export class StoreApis {
           return false;
         }
       }
+
+      console.log("Waiting 10 seconds.");
+      await this.Delay(10000);
     }
 
     return false;
@@ -363,6 +364,11 @@ export class StoreApis {
   public async UpdateProductPackages(
     updatedProductString: string
   ): Promise<any> {
+    if (!(await this.PollModuleStatus())) {
+      // Wait until all modules are in the ready state
+      return Promise.reject("Failed to poll module status.");
+    }
+
     let updatedProductPackages = JSON.parse(updatedProductString);
 
     console.log(updatedProductPackages);
@@ -396,6 +402,8 @@ export class StoreApis {
   }
 
   public async PublishSubmission(): Promise<string> {
+    await this.CommitUpdateStoreSubmissionPackages();
+
     if (!(await this.PollModuleStatus())) {
       // Wait until all modules are in the ready state
       return Promise.reject("Failed to poll module status.");

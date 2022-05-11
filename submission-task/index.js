@@ -411,8 +411,6 @@ class StoreApis {
             let status = new ModuleStatus();
             status.isReady = false;
             while (!status.isReady) {
-                console.log("Waiting 10 seconds.");
-                yield this.Delay(10000);
                 let moduleStatus = yield this.GetModuleStatus();
                 console.log(JSON.stringify(moduleStatus));
                 status = moduleStatus.responseData;
@@ -439,6 +437,8 @@ class StoreApis {
                         return false;
                     }
                 }
+                console.log("Waiting 10 seconds.");
+                yield this.Delay(10000);
             }
             return false;
         });
@@ -510,6 +510,10 @@ class StoreApis {
     }
     UpdateProductPackages(updatedProductString) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (!(yield this.PollModuleStatus())) {
+                // Wait until all modules are in the ready state
+                return Promise.reject("Failed to poll module status.");
+            }
             let updatedProductPackages = JSON.parse(updatedProductString);
             console.log(updatedProductPackages);
             let updateSubmissionData = yield this.UpdateStoreSubmissionPackages(updatedProductPackages);
@@ -528,6 +532,7 @@ class StoreApis {
     }
     PublishSubmission() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield this.CommitUpdateStoreSubmissionPackages();
             if (!(yield this.PollModuleStatus())) {
                 // Wait until all modules are in the ready state
                 return Promise.reject("Failed to poll module status.");
