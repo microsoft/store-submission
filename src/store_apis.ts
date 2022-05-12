@@ -410,7 +410,15 @@ export class StoreApis {
   }
 
   public async PublishSubmission(): Promise<string> {
-    await this.CommitUpdateStoreSubmissionPackages();
+    const commitResult = await this.CommitUpdateStoreSubmissionPackages();
+    if (!commitResult.isSuccess) {
+      return Promise.reject(
+        `Failed to commit the updated submission - ${JSON.stringify(
+          commitResult.errors
+        )}`
+      );
+    }
+    console.log(JSON.stringify(commitResult));
 
     if (!(await this.PollModuleStatus())) {
       // Wait until all modules are in the ready state
