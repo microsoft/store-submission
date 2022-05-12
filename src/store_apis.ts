@@ -1,6 +1,6 @@
 import * as https from "https";
 
-export let EnvVariablePrefix = "MICROSOFT_STORE_ACTION_";
+export const EnvVariablePrefix = "MICROSOFT_STORE_ACTION_";
 
 class ResponseWrapper<T> {
   responseData: T;
@@ -74,16 +74,16 @@ export class StoreApis {
       scope: StoreApis.scope,
     };
 
-    var formBody = [];
-    for (var property in requestParameters) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(requestParameters[property]);
+    const formBody = [];
+    for (const property in requestParameters) {
+      const encodedKey = encodeURIComponent(property);
+      const encodedValue = encodeURIComponent(requestParameters[property]);
       formBody.push(encodedKey + "=" + encodedValue);
     }
 
-    var dataString = formBody.join("\r\n&");
+    const dataString = formBody.join("\r\n&");
 
-    var options: https.RequestOptions = {
+    const options: https.RequestOptions = {
       host: StoreApis.microsoftOnlineLoginHost,
       path: `/${this.tenantId}${StoreApis.authOAuth2TokenSuffix}`,
       method: "POST",
@@ -94,15 +94,15 @@ export class StoreApis {
     };
 
     return new Promise<string>((resolve, reject) => {
-      var req = https.request(options, (res) => {
-        var responseString: string = "";
+      const req = https.request(options, (res) => {
+        let responseString = "";
 
         res.on("data", (data) => {
           responseString += data;
         });
 
         res.on("end", function () {
-          var responseObject = JSON.parse(responseString);
+          const responseObject = JSON.parse(responseString);
           if (responseObject.error) reject(responseObject);
           else resolve(responseObject.access_token);
         });
@@ -119,7 +119,7 @@ export class StoreApis {
   }
 
   private GetCurrentDraftSubmissionPackagesData(): Promise<
-    ResponseWrapper<any>
+    ResponseWrapper<unknown>
   > {
     return this.CreateStoreHttpRequest(
       "",
@@ -131,7 +131,7 @@ export class StoreApis {
   private GetCurrentDraftSubmissionMetadata(
     moduleName: string,
     listingLanguages: string
-  ): Promise<ResponseWrapper<any>> {
+  ): Promise<ResponseWrapper<unknown>> {
     return this.CreateStoreHttpRequest(
       "",
       "GET",
@@ -140,8 +140,8 @@ export class StoreApis {
   }
 
   private async UpdateStoreSubmissionPackages(
-    submission: any
-  ): Promise<ResponseWrapper<any>> {
+    submission: unknown
+  ): Promise<ResponseWrapper<unknown>> {
     return this.CreateStoreHttpRequest(
       JSON.stringify(submission),
       "PUT",
@@ -150,7 +150,7 @@ export class StoreApis {
   }
 
   private async CommitUpdateStoreSubmissionPackages(): Promise<
-    ResponseWrapper<any>
+    ResponseWrapper<unknown>
   > {
     return this.CreateStoreHttpRequest(
       "",
@@ -192,7 +192,7 @@ export class StoreApis {
     method: string,
     path: string
   ): Promise<ResponseWrapper<T>> {
-    var options: https.RequestOptions = {
+    const options: https.RequestOptions = {
       host: StoreApis.storeApiUrl,
       path: path,
       method: method,
@@ -205,9 +205,9 @@ export class StoreApis {
     };
 
     return new Promise<ResponseWrapper<T>>((resolve, reject) => {
-      var req = https.request(options, (res) => {
+      const req = https.request(options, (res) => {
         if (res.statusCode == 404) {
-          let error = new ResponseWrapper();
+          const error = new ResponseWrapper();
           error.isSuccess = false;
           error.errors = [];
           error.errors[0] = new Error();
@@ -215,14 +215,14 @@ export class StoreApis {
           reject(error);
           return;
         }
-        var responseString: string = "";
+        let responseString = "";
 
         res.on("data", (data) => {
           responseString += data;
         });
 
         res.on("end", function () {
-          var responseObject = <ResponseWrapper<T>>JSON.parse(responseString);
+          const responseObject = <ResponseWrapper<T>>JSON.parse(responseString);
           resolve(responseObject);
         });
       });
@@ -242,11 +242,11 @@ export class StoreApis {
     status.isReady = false;
 
     while (!status.isReady) {
-      let moduleStatus = await this.GetModuleStatus();
+      const moduleStatus = await this.GetModuleStatus();
       console.log(JSON.stringify(moduleStatus));
       status = moduleStatus.responseData;
       if (!moduleStatus.isSuccess) {
-        var errorResponse = moduleStatus as any as ErrorResponse;
+        const errorResponse = moduleStatus as unknown as ErrorResponse;
         if (errorResponse.statusCode == 401) {
           console.log(
             `Access token expired. Requesting new one. (message='${errorResponse.message}')`
@@ -289,8 +289,9 @@ export class StoreApis {
     moduleName: string,
     listingLanguage: string
   ): Promise<string> {
-    return new Promise<string>(async (resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
       if (
+        moduleName &&
         moduleName.toLowerCase() != "availability" &&
         moduleName.toLowerCase() != "listings" &&
         moduleName.toLowerCase() != "properties"
@@ -301,19 +302,25 @@ export class StoreApis {
         return;
       }
 
-      await (moduleName
+      (moduleName
         ? this.GetCurrentDraftSubmissionMetadata(moduleName, listingLanguage)
         : this.GetCurrentDraftSubmissionPackagesData()
       )
         .then((currentDraftResponse) => {
           if (!currentDraftResponse.isSuccess) {
-            reject("Failed to get the existing draft.");
+            reject(
+              `Failed to get the existing draft. - ${JSON.stringify(
+                currentDraftResponse,
+                null,
+                2
+              )}`
+            );
           } else {
             resolve(JSON.stringify(currentDraftResponse.responseData));
           }
         })
-        .catch((error: any) => {
-          reject(`Failed to get the existing draft. - ${error.errorS}`);
+        .catch((error) => {
+          reject(`Failed to get the existing draft. - ${error.errors}`);
         });
     });
   }
@@ -324,15 +331,16 @@ export class StoreApis {
     let status: SubmissionStatus = new SubmissionStatus();
     status.hasFailed = false;
 
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise<PublishingStatus>(async (resolve, reject) => {
       while (!status.hasFailed) {
-        let submissionStatus = await this.GetSubmissionStatus(
+        const submissionStatus = await this.GetSubmissionStatus(
           pollingSubmissionId
         );
         console.log(JSON.stringify(submissionStatus));
         status = submissionStatus.responseData;
         if (!submissionStatus.isSuccess || status.hasFailed) {
-          var errorResponse = submissionStatus as any as ErrorResponse;
+          const errorResponse = submissionStatus as unknown as ErrorResponse;
           if (errorResponse.statusCode == 401) {
             console.log(
               `Access token expired. Requesting new one. (message='${errorResponse.message}')`
@@ -363,17 +371,17 @@ export class StoreApis {
 
   public async UpdateProductPackages(
     updatedProductString: string
-  ): Promise<any> {
+  ): Promise<unknown> {
     if (!(await this.PollModuleStatus())) {
       // Wait until all modules are in the ready state
       return Promise.reject("Failed to poll module status.");
     }
 
-    let updatedProductPackages = JSON.parse(updatedProductString);
+    const updatedProductPackages = JSON.parse(updatedProductString);
 
     console.log(updatedProductPackages);
 
-    let updateSubmissionData = await this.UpdateStoreSubmissionPackages(
+    const updateSubmissionData = await this.UpdateStoreSubmissionPackages(
       updatedProductPackages
     );
     console.log(JSON.stringify(updateSubmissionData));
@@ -388,7 +396,7 @@ export class StoreApis {
 
     console.log("Committing package changes...");
 
-    let commitResult = await this.CommitUpdateStoreSubmissionPackages();
+    const commitResult = await this.CommitUpdateStoreSubmissionPackages();
     if (!commitResult.isSuccess) {
       return Promise.reject(
         `Failed to commit the updated submission - ${JSON.stringify(
@@ -411,8 +419,7 @@ export class StoreApis {
 
     let submissionId: string | null = null;
 
-    let submitSubmissionResponse: ResponseWrapper<SubmissionResponse>;
-    submitSubmissionResponse = await this.SubmitSubmission();
+    const submitSubmissionResponse = await this.SubmitSubmission();
     console.log(JSON.stringify(submitSubmissionResponse));
     if (submitSubmissionResponse.isSuccess) {
       if (
@@ -440,18 +447,11 @@ export class StoreApis {
   }
 
   private LoadState() {
-    this.productId = process.env[`${EnvVariablePrefix}product_id`]!;
-    this.sellerId = process.env[`${EnvVariablePrefix}seller_id`]!;
-    this.tenantId = process.env[`${EnvVariablePrefix}tenant_id`]!;
-    this.clientId = process.env[`${EnvVariablePrefix}client_id`]!;
-    this.clientSecret = process.env[`${EnvVariablePrefix}client_secret`]!;
-    this.accessToken = process.env[`${EnvVariablePrefix}access_token`]!;
-
-    console.log(`productId = ${this.productId}`);
-    console.log(`sellerId = ${this.sellerId}`);
-    console.log(`tenantId = ${this.tenantId}`);
-    console.log(`clientId = ${this.clientId}`);
-    console.log(`clientSecret = ${this.clientSecret}`);
-    console.log(`accessToken = ${this.accessToken}`);
+    this.productId = process.env[`${EnvVariablePrefix}product_id`] ?? "";
+    this.sellerId = process.env[`${EnvVariablePrefix}seller_id`] ?? "";
+    this.tenantId = process.env[`${EnvVariablePrefix}tenant_id`] ?? "";
+    this.clientId = process.env[`${EnvVariablePrefix}client_id`] ?? "";
+    this.clientSecret = process.env[`${EnvVariablePrefix}client_secret`] ?? "";
+    this.accessToken = process.env[`${EnvVariablePrefix}access_token`] ?? "";
   }
 }

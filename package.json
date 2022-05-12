@@ -9,18 +9,22 @@
   "scripts": {
     "build": "tsc && ncc build lib/github_action.js && ncc build lib/azure_devops_task.js -o submission-task",
     "package": "tfx extension create --manifest-globs vss-extension.json",
+    "eslint": "eslint . --ext .ts,.tsx",
     "format": "prettier --write **/*.ts"
   },
   "devDependencies": {
     "@tsconfig/node17": "^1.0.0",
-    "@types/node": "^17.0.31",
+    "@types/node": "^17.0.32",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
+    "eslint": "^8.15.0",
     "@vercel/ncc": "^0.33.4",
     "prettier": "^2.6.2",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
   "dependencies": {
-    "@actions/core": "^1.7.0",
+    "@actions/core": "^1.8.0",
     "azure-pipelines-task-lib": "^3.2.0"
   }
 }

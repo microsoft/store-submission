@@ -2,17 +2,17 @@ import tl = require("azure-pipelines-task-lib/task");
 import { StoreApis, EnvVariablePrefix } from "./store_apis";
 
 (async function main() {
-  let storeApis = new StoreApis();
+  const storeApis = new StoreApis();
 
   try {
-    let command = tl.getInput("command");
+    const command = tl.getInput("command");
     switch (command) {
-      case "configure":
-        storeApis.productId = tl.getInput("productId")!;
-        storeApis.sellerId = tl.getInput("sellerId")!;
-        storeApis.tenantId = tl.getInput("tenantId")!;
-        storeApis.clientId = tl.getInput("clientId")!;
-        storeApis.clientSecret = tl.getInput("clientSecret")!;
+      case "configure": {
+        storeApis.productId = tl.getInput("productId") || "";
+        storeApis.sellerId = tl.getInput("sellerId") || "";
+        storeApis.tenantId = tl.getInput("tenantId") || "";
+        storeApis.clientId = tl.getInput("clientId") || "";
+        storeApis.clientSecret = tl.getInput("clientSecret") || "";
 
         await storeApis.InitAsync();
 
@@ -54,20 +54,22 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         );
 
         break;
+      }
 
-      case "get":
-        let moduleName = tl.getInput("moduleName") || "";
-        let listingLanguage = tl.getInput("listingLanguage")!;
-        let draftSubmission = await storeApis.GetExistingDraft(
+      case "get": {
+        const moduleName = tl.getInput("moduleName") || "";
+        const listingLanguage = tl.getInput("listingLanguage") || "en";
+        const draftSubmission = await storeApis.GetExistingDraft(
           moduleName,
           listingLanguage
         );
         tl.setVariable("draftSubmission", draftSubmission.toString());
 
         break;
+      }
 
-      case "update":
-        let updatedProductString = tl.getInput("productUpdate");
+      case "update": {
+        const updatedProductString = tl.getInput("productUpdate");
         if (!updatedProductString) {
           tl.setResult(
             tl.TaskResult.Failed,
@@ -76,15 +78,16 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           return;
         }
 
-        let updateSubmissionData = await storeApis.UpdateProductPackages(
+        const updateSubmissionData = await storeApis.UpdateProductPackages(
           updatedProductString
         );
         console.log(updateSubmissionData);
 
         break;
+      }
 
-      case "poll":
-        let pollingSubmissionId = tl.getInput("pollingSubmissionId");
+      case "poll": {
+        const pollingSubmissionId = tl.getInput("pollingSubmissionId");
 
         if (!pollingSubmissionId) {
           tl.setResult(
@@ -94,25 +97,28 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           return;
         }
 
-        let publishingStatus = await storeApis.PollSubmissionStatus(
+        const publishingStatus = await storeApis.PollSubmissionStatus(
           pollingSubmissionId
         );
         tl.setVariable("submissionStatus", publishingStatus);
 
         break;
+      }
 
-      case "publish":
-        let submissionId = await storeApis.PublishSubmission();
+      case "publish": {
+        const submissionId = await storeApis.PublishSubmission();
         tl.setVariable("pollingSubmissionId", submissionId);
 
         break;
+      }
 
-      default:
+      default: {
         tl.setResult(tl.TaskResult.Failed, `Unknown command - ("${command}").`);
 
         break;
+      }
     }
-  } catch (error: any) {
-    tl.setResult(tl.TaskResult.Failed, error);
+  } catch (error: unknown) {
+    tl.setResult(tl.TaskResult.Failed, error as string);
   }
 })();

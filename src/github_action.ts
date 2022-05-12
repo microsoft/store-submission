@@ -2,12 +2,12 @@ import * as core from "@actions/core";
 import { StoreApis, EnvVariablePrefix } from "./store_apis";
 
 (async function main() {
-  let storeApis = new StoreApis();
+  const storeApis = new StoreApis();
 
   try {
-    let command = core.getInput("command");
+    const command = core.getInput("command");
     switch (command) {
-      case "configure":
+      case "configure": {
         storeApis.productId = core.getInput("product-id");
         storeApis.sellerId = core.getInput("seller-id");
         storeApis.tenantId = core.getInput("tenant-id");
@@ -48,59 +48,65 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         core.setSecret(storeApis.accessToken);
 
         break;
+      }
 
-      case "get":
-        let moduleName = core.getInput("module-name");
-        let listingLanguage = core.getInput("listing-language");
-        let draftSubmission = await storeApis.GetExistingDraft(
+      case "get": {
+        const moduleName = core.getInput("module-name");
+        const listingLanguage = core.getInput("listing-language");
+        const draftSubmission = await storeApis.GetExistingDraft(
           moduleName,
           listingLanguage
         );
         core.setOutput("draft-submission", draftSubmission);
 
         break;
+      }
 
-      case "update":
-        let updatedProductString = core.getInput("product-update");
+      case "update": {
+        const updatedProductString = core.getInput("product-update");
         if (!updatedProductString) {
           core.setFailed(`product-update parameter cannot be empty.`);
           return;
         }
 
-        let updateSubmissionData = await storeApis.UpdateProductPackages(
+        const updateSubmissionData = await storeApis.UpdateProductPackages(
           updatedProductString
         );
         console.log(updateSubmissionData);
 
         break;
+      }
 
-      case "poll":
-        let pollingSubmissionId = core.getInput("polling-submission-id");
+      case "poll": {
+        const pollingSubmissionId = core.getInput("polling-submission-id");
 
         if (!pollingSubmissionId) {
           core.setFailed(`polling-submission-id parameter cannot be empty.`);
           return;
         }
 
-        let publishingStatus = await storeApis.PollSubmissionStatus(
+        const publishingStatus = await storeApis.PollSubmissionStatus(
           pollingSubmissionId
         );
         core.setOutput("submission-status", publishingStatus);
 
         break;
+      }
 
-      case "publish":
-        let submissionId = await storeApis.PublishSubmission();
+      case "publish": {
+        const submissionId = await storeApis.PublishSubmission();
         core.setOutput("polling-submission-id", submissionId);
 
         break;
+      }
 
-      default:
+      default: {
         core.setFailed(`Unknown command - ("${command}").`);
 
         break;
+      }
     }
-  } catch (error: any) {
-    core.setFailed(error);
+  } catch (error: unknown) {
+    core.setFailed(error as string);
   }
 })();
