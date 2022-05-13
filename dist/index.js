@@ -564,6 +564,10 @@ class StoreApis {
                 return Promise.reject(`Failed to commit the updated submission - ${JSON.stringify(commitResult.errors)}`);
             }
             console.log(JSON.stringify(commitResult));
+            if (!(yield this.PollModuleStatus())) {
+                // Wait until all modules are in the ready state
+                return Promise.reject("Failed to poll module status.");
+            }
             return updateSubmissionData;
         });
     }

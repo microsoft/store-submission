@@ -406,6 +406,11 @@ export class StoreApis {
     }
     console.log(JSON.stringify(commitResult));
 
+    if (!(await this.PollModuleStatus())) {
+      // Wait until all modules are in the ready state
+      return Promise.reject("Failed to poll module status.");
+    }
+
     return updateSubmissionData;
   }
 
