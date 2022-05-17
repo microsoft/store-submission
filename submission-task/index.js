@@ -425,6 +425,7 @@ class StoreApis {
                     if (errorResponse.statusCode == 401) {
                         console.log(`Access token expired. Requesting new one. (message='${errorResponse.message}')`);
                         yield this.InitAsync();
+                        status = new ModuleStatus();
                         status.isReady = false;
                         continue;
                     }

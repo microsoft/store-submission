@@ -252,6 +252,7 @@ export class StoreApis {
             `Access token expired. Requesting new one. (message='${errorResponse.message}')`
           );
           await this.InitAsync();
+          status = new ModuleStatus();
           status.isReady = false;
           continue;
         }
