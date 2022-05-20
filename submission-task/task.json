@@ -113,11 +113,20 @@
         {
             "name": "productUpdate",
             "type": "string",
-            "label": "The Json to upload the package data",
+            "label": "The Json payload that is used to update the package data",
             "defaultValue": "",
             "required": false,
             "visibleRule": "command = update",
             "helpMarkDown": "The Json to upload the package data"
+        },
+        {
+            "name": "metadataUpdate",
+            "type": "string",
+            "label": "The Json payload that is used to update the metadata data (listing, properties and/or availability)",
+            "defaultValue": "",
+            "required": false,
+            "visibleRule": "command = update",
+            "helpMarkDown": "The Json payload that is used to update the metadata data (listing, properties and/or availability)"
         },
         {
             "name": "pollingSubmissionId",

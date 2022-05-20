@@ -63,16 +63,27 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
       }
 
       case "update": {
+        const updatedMetadataString = core.getInput("metadata-update");
         const updatedProductString = core.getInput("product-update");
-        if (!updatedProductString) {
-          core.setFailed(`product-update parameter cannot be empty.`);
+        if (!updatedMetadataString && !updatedProductString) {
+          core.setFailed(
+            `Nothing to update. Both product-update and metadata-update are null.`
+          );
           return;
         }
 
-        const updateSubmissionData = await storeApis.UpdateProductPackages(
-          updatedProductString
-        );
-        console.log(updateSubmissionData);
+        if (updatedMetadataString) {
+          const updateSubmissionMetadata =
+            await storeApis.UpdateSubmissionMetadata(updatedMetadataString);
+          console.log(updateSubmissionMetadata);
+        }
+
+        if (updatedProductString) {
+          const updateSubmissionData = await storeApis.UpdateProductPackages(
+            updatedProductString
+          );
+          console.log(updateSubmissionData);
+        }
 
         break;
       }

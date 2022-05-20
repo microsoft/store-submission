@@ -164,6 +164,16 @@ export class StoreApis {
     );
   }
 
+  private UpdateCurrentDraftSubmissionMetadata(
+    submissionMetadata: string
+  ): Promise<ResponseWrapper<unknown>> {
+    return this.CreateStoreHttpRequest(
+      JSON.stringify(submissionMetadata),
+      "PUT",
+      `/submission/v1/product/${this.productId}/metadata`
+    );
+  }
+
   private async UpdateStoreSubmissionPackages(
     submission: unknown
   ): Promise<ResponseWrapper<unknown>> {
@@ -403,6 +413,38 @@ export class StoreApis {
         await this.Delay(10000);
       }
     });
+  }
+
+  public async UpdateSubmissionMetadata(
+    submissionMetadataString: string
+  ): Promise<unknown> {
+    if (!(await this.PollModuleStatus())) {
+      // Wait until all modules are in the ready state
+      return Promise.reject("Failed to poll module status.");
+    }
+
+    const submissionMetadata = JSON.parse(submissionMetadataString);
+
+    console.log(submissionMetadata);
+
+    const updateSubmissionData =
+      await this.UpdateCurrentDraftSubmissionMetadata(submissionMetadata);
+    console.log(JSON.stringify(updateSubmissionData));
+
+    if (!updateSubmissionData.isSuccess) {
+      return Promise.reject(
+        `Failed to update submission metadata - ${JSON.stringify(
+          updateSubmissionData.errors
+        )}`
+      );
+    }
+
+    if (!(await this.PollModuleStatus())) {
+      // Wait until all modules are in the ready state
+      return Promise.reject("Failed to poll module status.");
+    }
+
+    return updateSubmissionData;
   }
 
   public async UpdateProductPackages(

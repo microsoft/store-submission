@@ -36,7 +36,10 @@ inputs:
     required: false
     default: 'en'
   product-update:
-    description: 'The Json to upload the package data'
+    description: 'The Json payload that is used to update the package data'
+    required: false
+  metadata-update:
+    description: 'The Json payload that is used to update the metadata data (listing, properties and/or availability)'
     required: false
   polling-submission-id:
     description: 'The Id of the active submission being processed'
