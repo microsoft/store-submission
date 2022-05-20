@@ -248,6 +248,98 @@ class SubmissionStatus {
         });
     }
 }
+class ListingAssetsResponse {
+    constructor() {
+        Object.defineProperty(this, "listingAssets", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
+}
+class ImageSize {
+    constructor() {
+        Object.defineProperty(this, "width", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "height", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
+}
+class ListingAsset {
+    constructor() {
+        Object.defineProperty(this, "language", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "storeLogos", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "screenshots", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
+}
+class Screenshot {
+    constructor() {
+        Object.defineProperty(this, "id", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "assetUrl", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "imageSize", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
+}
+class StoreLogo {
+    constructor() {
+        Object.defineProperty(this, "id", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "assetUrl", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+        Object.defineProperty(this, "imageSize", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
+    }
+}
 class StoreApis {
     constructor() {
         Object.defineProperty(this, "accessToken", {
@@ -367,6 +459,11 @@ class StoreApis {
     SubmitSubmission() {
         return __awaiter(this, void 0, void 0, function* () {
             return this.CreateStoreHttpRequest("", "POST", `/submission/v1/product/${this.productId}/submit`);
+        });
+    }
+    GetCurrentDraftListingAssets(listingLanguages) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.CreateStoreHttpRequest("", "GET", `/submission/v1/product/${this.productId}/listings/assets?languages=${listingLanguages}`);
         });
     }
     CreateStoreHttpRequest(requestParameters, method, path) {
@@ -575,6 +672,24 @@ class StoreApis {
                 else {
                     resolve(submissionId);
                 }
+            });
+        });
+    }
+    GetExistingDraftListingAssets(listingLanguage) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                this.GetCurrentDraftListingAssets(listingLanguage)
+                    .then((draftListingAssetsResponse) => {
+                    if (!draftListingAssetsResponse.isSuccess) {
+                        reject(`Failed to get the existing draft listing assets. - ${JSON.stringify(draftListingAssetsResponse, null, 2)}`);
+                    }
+                    else {
+                        resolve(JSON.stringify(draftListingAssetsResponse.responseData));
+                    }
+                })
+                    .catch((error) => {
+                    reject(`Failed to get the existing draft listing assets. - ${error.errors}`);
+                });
             });
         });
     }
