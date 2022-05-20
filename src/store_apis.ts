@@ -46,10 +46,8 @@ export class StoreApis {
   private static readonly microsoftOnlineLoginHost =
     "login.microsoftonline.com";
   private static readonly authOAuth2TokenSuffix = "/oauth2/v2.0/token";
-  private static readonly scope =
-    "https://api.store-int.microsoft.com/.default";
-  private static readonly storeApiUrl = "api.store-int.microsoft.com";
-  // private static readonly storeApiUrl = 'api.store.microsoft.com'
+  private static readonly scope = "https://api.store.microsoft.com/.default";
+  private static readonly storeApiUrl = "api.store.microsoft.com";
 
   constructor() {
     this.LoadState();
