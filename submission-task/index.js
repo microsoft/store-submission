@@ -1661,7 +1661,7 @@ function _exposeTaskLibSecret(keyFile, secret) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameter = exports.getEndpointUrl = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolInput = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
+exports.updateReleaseName = exports.addBuildTag = exports.updateBuildNumber = exports.uploadBuildLog = exports.associateArtifact = exports.uploadArtifact = exports.logIssue = exports.logDetail = exports.setProgress = exports.setEndpoint = exports.addAttachment = exports.uploadSummary = exports.prependPath = exports.uploadFile = exports.CodeCoverageEnabler = exports.CodeCoveragePublisher = exports.TestPublisher = exports.getHttpCertConfiguration = exports.getHttpProxyConfiguration = exports.findMatch = exports.filter = exports.match = exports.tool = exports.execSync = exports.exec = exports.rmRF = exports.legacyFindFiles = exports.find = exports.retry = exports.mv = exports.cp = exports.ls = exports.which = exports.resolve = exports.mkdirP = exports.popd = exports.pushd = exports.cd = exports.checkPath = exports.cwd = exports.getPlatform = exports.osType = exports.writeFile = exports.exist = exports.stats = exports.debug = exports.error = exports.warning = exports.command = exports.setTaskVariable = exports.getTaskVariable = exports.getSecureFileTicket = exports.getSecureFileName = exports.getEndpointAuthorization = exports.getEndpointAuthorizationParameterRequired = exports.getEndpointAuthorizationParameter = exports.getEndpointAuthorizationSchemeRequired = exports.getEndpointAuthorizationScheme = exports.getEndpointDataParameterRequired = exports.getEndpointDataParameter = exports.getEndpointUrlRequired = exports.getEndpointUrl = exports.getPathInputRequired = exports.getPathInput = exports.filePathSupplied = exports.getDelimitedInput = exports.getBoolInput = exports.getInputRequired = exports.getInput = exports.setSecret = exports.setVariable = exports.getVariables = exports.assertAgent = exports.getVariable = exports.loc = exports.setResourcePath = exports.setResult = exports.setErrStream = exports.setStdStream = exports.Platform = exports.FieldType = exports.ArtifactType = exports.IssueType = exports.TaskState = exports.TaskResult = void 0;
 var shell = __nccwpck_require__(3516);
 var childProcess = __nccwpck_require__(2081);
 var fs = __nccwpck_require__(7147);
@@ -1870,6 +1870,17 @@ function getInput(name, required) {
 }
 exports.getInput = getInput;
 /**
+ * Gets the value of an input.
+ * If the value is not set, it will throw.
+ *
+ * @param     name     name of the input to get
+ * @returns   string
+ */
+function getInputRequired(name) {
+    return getInput(name, true);
+}
+exports.getInputRequired = getInputRequired;
+/**
  * Gets the value of an input and converts to a bool.  Convenience.
  * If required is true and the value is not set, it will throw.
  * If required is false and the value is not set, returns false.
@@ -1947,6 +1958,20 @@ function getPathInput(name, required, check) {
     return inval;
 }
 exports.getPathInput = getPathInput;
+/**
+ * Gets the value of a path input
+ * It will be quoted for you if it isn't already and contains spaces
+ * If the value is not set, it will throw.
+ * If check is true and the path does not exist, it will throw.
+ *
+ * @param     name      name of the input to get
+ * @param     check     whether path is checked.  optional, defaults to false
+ * @returns   string
+ */
+function getPathInputRequired(name, check) {
+    return getPathInput(name, true, check);
+}
+exports.getPathInputRequired = getPathInputRequired;
 //-----------------------------------------------------
 // Endpoint Helpers
 //-----------------------------------------------------
@@ -1967,6 +1992,17 @@ function getEndpointUrl(id, optional) {
     return urlval;
 }
 exports.getEndpointUrl = getEndpointUrl;
+/**
+ * Gets the url for a service endpoint
+ * If the url was not set, it will throw.
+ *
+ * @param     id        name of the service endpoint
+ * @returns   string
+ */
+function getEndpointUrlRequired(id) {
+    return getEndpointUrl(id, false);
+}
+exports.getEndpointUrlRequired = getEndpointUrlRequired;
 /*
  * Gets the endpoint data parameter value with specified key for a service endpoint
  * If the endpoint data parameter was not set and is not optional, it will throw.
@@ -1985,6 +2021,18 @@ function getEndpointDataParameter(id, key, optional) {
     return dataParamVal;
 }
 exports.getEndpointDataParameter = getEndpointDataParameter;
+/*
+ * Gets the endpoint data parameter value with specified key for a service endpoint
+ * If the endpoint data parameter was not set, it will throw.
+ *
+ * @param id name of the service endpoint
+ * @param key of the parameter
+ * @returns {string} value of the endpoint data parameter
+ */
+function getEndpointDataParameterRequired(id, key) {
+    return getEndpointDataParameter(id, key, false);
+}
+exports.getEndpointDataParameterRequired = getEndpointDataParameterRequired;
 /**
  * Gets the endpoint authorization scheme for a service endpoint
  * If the endpoint authorization scheme is not set and is not optional, it will throw.
@@ -2003,6 +2051,17 @@ function getEndpointAuthorizationScheme(id, optional) {
 }
 exports.getEndpointAuthorizationScheme = getEndpointAuthorizationScheme;
 /**
+ * Gets the endpoint authorization scheme for a service endpoint
+ * If the endpoint authorization scheme is not set, it will throw.
+ *
+ * @param id name of the service endpoint
+ * @returns {string} value of the endpoint authorization scheme
+ */
+function getEndpointAuthorizationSchemeRequired(id) {
+    return getEndpointAuthorizationScheme(id, false);
+}
+exports.getEndpointAuthorizationSchemeRequired = getEndpointAuthorizationSchemeRequired;
+/**
  * Gets the endpoint authorization parameter value for a service endpoint with specified key
  * If the endpoint authorization parameter is not set and is not optional, it will throw.
  *
@@ -2020,6 +2079,18 @@ function getEndpointAuthorizationParameter(id, key, optional) {
     return authParam;
 }
 exports.getEndpointAuthorizationParameter = getEndpointAuthorizationParameter;
+/**
+ * Gets the endpoint authorization parameter value for a service endpoint with specified key
+ * If the endpoint authorization parameter is not set, it will throw.
+ *
+ * @param id name of the service endpoint
+ * @param key key to find the endpoint authorization parameter
+ * @returns {string} value of the endpoint authorization parameter value
+ */
+function getEndpointAuthorizationParameterRequired(id, key) {
+    return getEndpointAuthorizationParameter(id, key, false);
+}
+exports.getEndpointAuthorizationParameterRequired = getEndpointAuthorizationParameterRequired;
 /**
  * Gets the authorization details for a service endpoint
  * If the authorization was not set and is not optional, it will set the task result to Failed.
