@@ -6,7 +6,7 @@ This is a GitHub Action to update EXE and MSI apps in the Microsoft Store.
 
 1. Ensure you meet the [prerequisites](#prerequisites).
 
-2. [Install](https://github.com/marketplace/microsoft/store-submission) the extension.
+2. [Install](https://aka.ms/store-submission) the extension.
 
 3. [Obtain](#obtaining-your-credentials) and [configure](#configuring-your-credentials) your Partner Center credentials.
 
