@@ -14,7 +14,7 @@ This is a GitHub Action to update EXE and MSI apps in the Microsoft Store.
 
 ## Prerequisites
 
-1. You must have an Azure AD directory, and you must have [global administrator permission](https://azure.microsoft.com/en-us/documentation/articles/active-directory-assign-admin-roles/) for the directory. You can create a new Azure AD [from Partner Center](https://msdn.microsoft.com/windows/uwp/publish/manage-account-users).
+1. You must have an Azure AD directory, and you must have [global administrator permission](https://azure.microsoft.com/documentation/articles/active-directory-assign-admin-roles/) for the directory. You can create a new Azure AD [from Partner Center](https://msdn.microsoft.com/windows/uwp/publish/manage-account-users).
 
 2. You must associate your Azure AD directory with your Partner Center account to obtain the credentials to allow this extension to access your account and perform actions on your behalf.
 
@@ -37,7 +37,7 @@ Follow these steps to obtain them:
 
 4. Click **Add new key**. On the following screen, copy the **Key** value, which corresponds to the **Client secret**. You *will not* be able to access this info again after you leave this page, so make sure to not lose it. For more information, see the information about managing keys in [Add and manage Azure AD applications](https://msdn.microsoft.com/windows/uwp/publish/manage-account-users#add-and-manage-azure-ad-applications).
 
-See more details on how to create a new Azure AD application account in your organizaiton's directory and add it to your Partner Center account [here](https://docs.microsoft.com/en-gb/windows/uwp/publish/add-users-groups-and-azure-ad-applications#create-a-new-azure-ad-application-account-in-your-organizations-directory-and-add-it-to-your-partner-center-account).
+See more details on how to create a new Azure AD application account in your organizaiton's directory and add it to your Partner Center account [here](https://docs.microsoft.com/windows/uwp/publish/add-users-groups-and-azure-ad-applications#create-a-new-azure-ad-application-account-in-your-organizations-directory-and-add-it-to-your-partner-center-account).
 
 ## Task reference
 
