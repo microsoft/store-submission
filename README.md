@@ -39,11 +39,21 @@ Follow these steps to obtain them:
 
 See more details on how to create a new Azure AD application account in your organizaiton's directory and add it to your Partner Center account [here](https://docs.microsoft.com/en-gb/windows/uwp/publish/add-users-groups-and-azure-ad-applications#create-a-new-azure-ad-application-account-in-your-organizations-directory-and-add-it-to-your-partner-center-account).
 
+## Obtaining App Metadata
+
+### Seller ID
+
+The Seller ID can be found by clicking the gear icon in the upper right corner of the [Partner Center](https://partner.microsoft.com) and selecting `Account Settings`. You can find the Seller ID under [Legal info](https://partner.microsoft.com/dashboard/account/v3/organization/legalinfo)
+
+### Product ID
+
+The Product ID can be found by navigating to the overview of your application in the [Partner Center](https://partner.microsoft.com) and copying the Partner Center ID.
+
 ## Task reference
 
 ### Microsoft Store Submission
 
-This action allows you to publish your app on the Store by creating a submission in Partner Center. 
+This action allows you to publish your app on the Store by creating a submission in Partner Center.
 
 ## Sample
 
@@ -79,6 +89,6 @@ jobs:
 
       - name: Publish Submission
         uses: microsoft/store-submission@v1
-        with: 
+        with:
           command: publish
 ```
