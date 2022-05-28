@@ -385,6 +385,12 @@ class StoreApis {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "onlyOnReady", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this.LoadState();
     }
     Delay(ms) {
@@ -561,6 +567,15 @@ class StoreApis {
             this.accessToken = yield this.GetAccessToken();
         });
     }
+    IsReady() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.onlyOnReady) {
+                return true;
+            }
+            const moduleStatus = yield this.GetModuleStatus();
+            return moduleStatus.responseData.isReady;
+        });
+    }
     GetExistingDraft(moduleName, listingLanguage) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
@@ -724,13 +739,15 @@ class StoreApis {
         });
     }
     LoadState() {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         this.productId = (_a = process.env[`${exports.EnvVariablePrefix}product_id`]) !== null && _a !== void 0 ? _a : "";
         this.sellerId = (_b = process.env[`${exports.EnvVariablePrefix}seller_id`]) !== null && _b !== void 0 ? _b : "";
         this.tenantId = (_c = process.env[`${exports.EnvVariablePrefix}tenant_id`]) !== null && _c !== void 0 ? _c : "";
         this.clientId = (_d = process.env[`${exports.EnvVariablePrefix}client_id`]) !== null && _d !== void 0 ? _d : "";
         this.clientSecret = (_e = process.env[`${exports.EnvVariablePrefix}client_secret`]) !== null && _e !== void 0 ? _e : "";
         this.accessToken = (_f = process.env[`${exports.EnvVariablePrefix}access_token`]) !== null && _f !== void 0 ? _f : "";
+        const onlyOnReady = (_g = process.env[`${exports.EnvVariablePrefix}only-on-ready`]) !== null && _g !== void 0 ? _g : "false";
+        this.onlyOnReady = onlyOnReady === "true";
     }
 }
 exports.StoreApis = StoreApis;
