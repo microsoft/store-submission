@@ -53,6 +53,7 @@ const store_apis_1 = __nccwpck_require__(605);
                     storeApis.tenantId = core.getInput("tenant-id");
                     storeApis.clientId = core.getInput("client-id");
                     storeApis.clientSecret = core.getInput("client-secret");
+                    storeApis.onlyOnReady = core.getBooleanInput("only-on-ready");
                     yield storeApis.InitAsync();
                     core.exportVariable(`${store_apis_1.EnvVariablePrefix}product_id`, storeApis.productId);
                     core.exportVariable(`${store_apis_1.EnvVariablePrefix}seller_id`, storeApis.sellerId);
@@ -60,6 +61,7 @@ const store_apis_1 = __nccwpck_require__(605);
                     core.exportVariable(`${store_apis_1.EnvVariablePrefix}client_id`, storeApis.clientId);
                     core.exportVariable(`${store_apis_1.EnvVariablePrefix}client_secret`, storeApis.clientSecret);
                     core.exportVariable(`${store_apis_1.EnvVariablePrefix}access_token`, storeApis.accessToken);
+                    core.exportVariable(`${store_apis_1.EnvVariablePrefix}only-on-ready`, storeApis.onlyOnReady);
                     core.setSecret(storeApis.productId);
                     core.setSecret(storeApis.sellerId);
                     core.setSecret(storeApis.tenantId);
@@ -76,6 +78,10 @@ const store_apis_1 = __nccwpck_require__(605);
                     break;
                 }
                 case "update": {
+                    if (!(yield storeApis.IsReady())) {
+                        core.notice(`Only on ready is set and module is not ready, skipping.`);
+                        return;
+                    }
                     const updatedMetadataString = core.getInput("metadata-update");
                     const updatedProductString = core.getInput("product-update");
                     if (!updatedMetadataString && !updatedProductString) {
@@ -103,6 +109,10 @@ const store_apis_1 = __nccwpck_require__(605);
                     break;
                 }
                 case "publish": {
+                    if (!(yield storeApis.IsReady())) {
+                        core.notice(`Only on ready is set and module is not ready, skipping`);
+                        return;
+                    }
                     const submissionId = yield storeApis.PublishSubmission();
                     core.setOutput("polling-submission-id", submissionId);
                     break;
@@ -414,6 +424,12 @@ class StoreApis {
             writable: true,
             value: void 0
         });
+        Object.defineProperty(this, "onlyOnReady", {
+            enumerable: true,
+            configurable: true,
+            writable: true,
+            value: void 0
+        });
         this.LoadState();
     }
     Delay(ms) {
@@ -590,6 +606,15 @@ class StoreApis {
             this.accessToken = yield this.GetAccessToken();
         });
     }
+    IsReady() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.onlyOnReady) {
+                return true;
+            }
+            const moduleStatus = yield this.GetModuleStatus();
+            return moduleStatus.responseData.isReady;
+        });
+    }
     GetExistingDraft(moduleName, listingLanguage) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
@@ -753,13 +778,15 @@ class StoreApis {
         });
     }
     LoadState() {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g;
         this.productId = (_a = process.env[`${exports.EnvVariablePrefix}product_id`]) !== null && _a !== void 0 ? _a : "";
         this.sellerId = (_b = process.env[`${exports.EnvVariablePrefix}seller_id`]) !== null && _b !== void 0 ? _b : "";
         this.tenantId = (_c = process.env[`${exports.EnvVariablePrefix}tenant_id`]) !== null && _c !== void 0 ? _c : "";
         this.clientId = (_d = process.env[`${exports.EnvVariablePrefix}client_id`]) !== null && _d !== void 0 ? _d : "";
         this.clientSecret = (_e = process.env[`${exports.EnvVariablePrefix}client_secret`]) !== null && _e !== void 0 ? _e : "";
         this.accessToken = (_f = process.env[`${exports.EnvVariablePrefix}access_token`]) !== null && _f !== void 0 ? _f : "";
+        const onlyOnReady = (_g = process.env[`${exports.EnvVariablePrefix}only-on-ready`]) !== null && _g !== void 0 ? _g : "false";
+        this.onlyOnReady = onlyOnReady === "true";
     }
 }
 exports.StoreApis = StoreApis;

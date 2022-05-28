@@ -13,6 +13,7 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
         storeApis.tenantId = core.getInput("tenant-id");
         storeApis.clientId = core.getInput("client-id");
         storeApis.clientSecret = core.getInput("client-secret");
+        storeApis.onlyOnReady = core.getBooleanInput("only-on-ready");
 
         await storeApis.InitAsync();
 
@@ -40,6 +41,10 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
           `${EnvVariablePrefix}access_token`,
           storeApis.accessToken
         );
+        core.exportVariable(
+          `${EnvVariablePrefix}only-on-ready`,
+          storeApis.onlyOnReady
+        );
         core.setSecret(storeApis.productId);
         core.setSecret(storeApis.sellerId);
         core.setSecret(storeApis.tenantId);
@@ -63,6 +68,10 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
       }
 
       case "update": {
+        if (!(await storeApis.IsReady())) {
+          core.notice(`Only on ready is set and module is not ready, skipping.`);
+          return;
+        }
         const updatedMetadataString = core.getInput("metadata-update");
         const updatedProductString = core.getInput("product-update");
         if (!updatedMetadataString && !updatedProductString) {
@@ -105,6 +114,10 @@ import { StoreApis, EnvVariablePrefix } from "./store_apis";
       }
 
       case "publish": {
+        if (!(await storeApis.IsReady())) {
+          core.notice(`Only on ready is set and module is not ready, skipping`);
+          return;
+        }
         const submissionId = await storeApis.PublishSubmission();
         core.setOutput("polling-submission-id", submissionId);
 

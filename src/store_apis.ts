@@ -1,4 +1,5 @@
 import * as https from "https";
+import { runInThisContext } from "vm";
 
 export const EnvVariablePrefix = "MICROSOFT_STORE_ACTION_";
 
@@ -86,6 +87,7 @@ export class StoreApis {
   public tenantId: string;
   public clientId: string;
   public clientSecret: string;
+  public onlyOnReady: boolean;
 
   private Delay(ms: number): Promise<unknown> {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -331,6 +333,15 @@ export class StoreApis {
     this.accessToken = await this.GetAccessToken();
   }
 
+  public async IsReady(): Promise<boolean> {
+    if (!this.onlyOnReady) {
+      return true;
+    }
+
+    const moduleStatus = await this.GetModuleStatus();
+    return moduleStatus.responseData.isReady;
+  }
+
   public async GetExistingDraft(
     moduleName: string,
     listingLanguage: string
@@ -570,5 +581,7 @@ export class StoreApis {
     this.clientId = process.env[`${EnvVariablePrefix}client_id`] ?? "";
     this.clientSecret = process.env[`${EnvVariablePrefix}client_secret`] ?? "";
     this.accessToken = process.env[`${EnvVariablePrefix}access_token`] ?? "";
+    const onlyOnReady = process.env[`${EnvVariablePrefix}only-on-ready`] ?? "false";
+    this.onlyOnReady = onlyOnReady === "true";
   }
 }

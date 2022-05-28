@@ -10,7 +10,7 @@ inputs:
     required: false
     default: 'packaged'
   command:
-    description: 'The command to execute. Available command: `configure`, `get`, `update`, `poll`, or `publish`.'
+    description: 'The command to execute. Available command: `configure`, `get`, `status`, `update`, `poll`, or `publish`.'
     required: false
     default: 'configure'
   seller-id:
@@ -43,6 +43,9 @@ inputs:
     required: false
   polling-submission-id:
     description: 'The Id of the active submission being processed'
+    required: false
+  only-on-ready:
+    description: 'Only interact with the API when the module is ready to take on new submissions'
     required: false
 outputs:
   draft-submission:
