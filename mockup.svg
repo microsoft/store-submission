@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1440" height="900" viewBox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGrad" cx="80%" cy="20%" r="80%" fx="80%" fy="20%">
+      <stop offset="0%" stop-color="#020617" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#1E293B" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.02"/>
+    </linearGradient>
+    <filter id="glass" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="20" result="blur"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow"/>
+      <feComposite in="SourceGraphic" in2="glow" operator="over"/>
+    </filter>
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Deep Dark Background -->
+  <rect width="1440" height="900" fill="#020617"/>
+  <rect width="1440" height="900" fill="url(#bgGrad)"/>
+
+  <!-- Glowing Orbs -->
+  <circle cx="15%" cy="30%" r="200" fill="#020617" opacity="0.2" filter="blur(80px)"/>
+  <circle cx="85%" cy="70%" r="300" fill="#334155" opacity="0.15" filter="blur(100px)"/>
+
+  <!-- Browser Chrome -->
+  <rect x="40" y="40" width="1360" height="820" rx="24" fill="#0f172a" filter="url(#dropShadow)" stroke="#334155" stroke-width="1"/>
+  <circle cx="70" cy="70" r="6" fill="#ef4444"/>
+  <circle cx="95" cy="70" r="6" fill="#f59e0b"/>
+  <circle cx="120" cy="70" r="6" fill="#10b981"/>
+  <rect x="150" y="55" width="1140" height="30" rx="8" fill="#1e293b"/>
+  <text x="720" y="75" font-size="14" fill="#64748b" text-anchor="middle" font-family="system-ui">https://awesome-project.dev</text>
+
+  <!-- Sidebar -->
+  <rect x="40" y="100" width="240" height="760" fill="#0f172a" border-right="1px solid #1e293b"/>
+  <path d="M 280 100 L 280 860" stroke="#1e293b" stroke-width="1"/>
+
+  <!-- Logo in Sidebar -->
+  <circle cx="80" cy="150" r="16" fill="url(#bgGrad)" stroke="#020617" stroke-width="2"/>
+  <text x="110" y="156" font-size="18" font-weight="700" fill="#f8fafc" font-family="system-ui">NexusUI</text>
+
+  <!-- Nav Items -->
+  <rect x="60" y="200" width="200" height="40" rx="8" fill="#020617" opacity="0.1"/>
+  <text x="80" y="225" font-size="14" font-weight="600" fill="#020617" font-family="system-ui">Dashboard</text>
+  <text x="80" y="275" font-size="14" fill="#94a3b8" font-family="system-ui">Analytics</text>
+  <text x="80" y="325" font-size="14" fill="#94a3b8" font-family="system-ui">Transactions</text>
+  <text x="80" y="375" font-size="14" fill="#94a3b8" font-family="system-ui">Settings</text>
+
+  <!-- Main Content Area -->
+  <!-- Hero / Header -->
+  <text x="320" y="160" font-size="36" font-weight="800" fill="#f8fafc" font-family="system-ui">Free accounts for open source developers?</text>
+  <text x="320" y="190" font-size="16" fill="#94a3b8" font-family="system-ui">Welcome back. Here's what's happening today.</text>
+
+  <!-- Action Button -->
+  <rect x="1240" y="140" width="120" height="40" rx="8" fill="#1E293B"/>
+  <text x="1300" y="165" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" font-family="system-ui">Generate Report</text>
+
+  <!-- Bento Grid Cards (Glassmorphism) -->
+  <!-- Metric 1 -->
+  <rect x="320" y="240" width="320" height="160" rx="20" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#glass)"/>
+  <text x="350" y="280" font-size="14" fill="#94a3b8" font-family="system-ui">Total Revenue</text>
+  <text x="350" y="330" font-size="42" font-weight="800" fill="#f8fafc" font-family="system-ui">$128,430</text>
+  <text x="350" y="360" font-size="14" font-weight="600" fill="#10b981" font-family="system-ui">↑ +14.5% vs last month</text>
+
+  <!-- Metric 2 -->
+  <rect x="660" y="240" width="320" height="160" rx="20" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#glass)"/>
+  <text x="690" y="280" font-size="14" fill="#94a3b8" font-family="system-ui">Active Users</text>
+  <text x="690" y="330" font-size="42" font-weight="800" fill="#f8fafc" font-family="system-ui">45.2K</text>
+  <text x="690" y="360" font-size="14" font-weight="600" fill="#10b981" font-family="system-ui">↑ +5.2% vs last month</text>
+
+  <!-- Large Chart Area -->
+  <rect x="320" y="420" width="660" height="340" rx="20" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#glass)"/>
+  <text x="350" y="460" font-size="18" font-weight="600" fill="#f8fafc" font-family="system-ui">Performance Overview</text>
+
+  <!-- Abstract Chart Curve -->
+  <path d="M 350 700 C 450 650, 550 720, 650 600 C 750 480, 850 550, 950 450" fill="none" stroke="#020617" stroke-width="4" stroke-linecap="round"/>
+  <path d="M 350 700 C 450 650, 550 720, 650 600 C 750 480, 850 550, 950 450 L 950 720 L 350 720 Z" fill="#020617" opacity="0.1"/>
+
+  <!-- Secondary Chart Curve -->
+  <path d="M 350 650 C 450 580, 550 680, 650 520 C 750 400, 850 600, 950 550" fill="none" stroke="#334155" stroke-width="3" stroke-dasharray="8 8" stroke-linecap="round"/>
+
+  <!-- Right Panel -->
+  <rect x="1000" y="240" width="360" height="520" rx="20" fill="url(#cardGrad)" stroke="#334155" stroke-width="1" filter="url(#glass)"/>
+  <text x="1030" y="280" font-size="18" font-weight="600" fill="#f8fafc" font-family="system-ui">Recent Activity</text>
+
+  <!-- List Items -->
+  <circle cx="1045" cy="340" r="15" fill="#020617" opacity="0.2"/>
+  <circle cx="1045" cy="340" r="6" fill="#020617"/>
+  <text x="1075" y="335" font-size="14" font-weight="600" fill="#e2e8f0" font-family="system-ui">System updated to v2.4.1</text>
+  <text x="1075" y="355" font-size="12" fill="#64748b" font-family="system-ui">Just now</text>
+
+  <circle cx="1045" cy="410" r="15" fill="#1E293B" opacity="0.2"/>
+  <circle cx="1045" cy="410" r="6" fill="#1E293B"/>
+  <text x="1075" y="405" font-size="14" font-weight="600" fill="#e2e8f0" font-family="system-ui">New user registration: @alex</text>
+  <text x="1075" y="425" font-size="12" fill="#64748b" font-family="system-ui">2 hours ago</text>
+
+  <circle cx="1045" cy="480" r="15" fill="#334155" opacity="0.2"/>
+  <circle cx="1045" cy="480" r="6" fill="#334155"/>
+  <text x="1075" y="475" font-size="14" font-weight="600" fill="#e2e8f0" font-family="system-ui">Database backup completed</text>
+  <text x="1075" y="495" font-size="12" fill="#64748b" font-family="system-ui">5 hours ago</text>
+
+  <!-- Progress Bar Component -->
+  <text x="1030" y="580" font-size="14" font-weight="600" fill="#e2e8f0" font-family="system-ui">Monthly Goal</text>
+  <rect x="1030" y="600" width="300" height="8" rx="4" fill="#1e293b"/>
+  <rect x="1030" y="600" width="210" height="8" rx="4" fill="#1E293B"/>
+  <text x="1330" y="590" font-size="14" font-weight="600" fill="#1E293B" text-anchor="end" font-family="system-ui">70%</text>
+
+</svg>
