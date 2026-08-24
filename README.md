@@ -1,6 +1,118 @@
 # Microsoft Store Submission
 
+> [!WARNING]
+> ## ⚠️ This action is deprecated and no longer maintained
+>
+> **Please migrate to [`microsoft/microsoft-store-apppublisher`](https://github.com/microsoft/microsoft-store-apppublisher) + the [Microsoft Store Developer CLI](https://github.com/microsoft/msstore-cli).**
+>
+> The MSStore CLI is the supported way to publish to the Microsoft Store from CI/CD. It covers everything this
+> action does — for both packaged (MSIX) and unpackaged (MSI/EXE) applications — and is actively maintained.
+>
+> This repository is archived. Existing workflows referencing `microsoft/store-submission@v1` will keep running,
+> but no further fixes, features, or security updates will be published here.
+>
+> **See [Migrating to the MSStore CLI](#migrating-to-the-msstore-cli) below for a step-by-step guide.**
+
 This is a GitHub Action to update EXE and MSI apps in the Microsoft Store.
+
+## Migrating to the MSStore CLI
+
+Migration is a near 1:1 mapping. Replace the `microsoft/store-submission` steps with a single setup step plus
+`msstore` CLI invocations.
+
+### 1. Replace the setup step
+
+```yml
+- uses: microsoft/microsoft-store-apppublisher@v1.4
+```
+
+This puts the `msstore` CLI on the runner's `PATH`. It works on Windows, macOS, and Linux.
+
+### 2. Map your commands
+
+| `microsoft/store-submission` input | MSStore CLI equivalent |
+| --- | --- |
+| `command: configure` with `tenant-id`, `seller-id`, `client-id`, `client-secret` | `msstore reconfigure --tenantId <id> --sellerId <id> --clientId <id> --clientSecret <secret>` |
+| `command: get` | `msstore submission get <product-id>` |
+| `command: get` with `module-name` / `listing-language` | `msstore submission get <product-id>` (returns the full draft) |
+| `command: update` with `product-update: '<json>'` | `msstore submission update <product-id> '<json>'` |
+| `command: update` with `metadata-update: '<json>'` | `msstore submission updateMetadata <product-id> '<json>'` |
+| `command: poll` / `polling-submission-id` | `msstore submission poll <product-id>` |
+| `command: publish` | `msstore submission publish <product-id>` |
+| `type: win32` or `type: packaged` | Not needed — the CLI detects the application type automatically |
+
+The JSON accepted by `msstore submission update` is the same Partner Center submission payload you already pass to
+`product-update`, so existing payloads can be carried over as-is.
+
+### 3. Before and after
+
+Before:
+
+```yml
+- name: Configure Store Credentials
+  uses: microsoft/store-submission@v1
+  with:
+    command: configure
+    type: win32
+    seller-id: ${{ secrets.SELLER_ID }}
+    product-id: ${{ secrets.PRODUCT_ID }}
+    tenant-id: ${{ secrets.TENANT_ID }}
+    client-id: ${{ secrets.CLIENT_ID }}
+    client-secret: ${{ secrets.CLIENT_SECRET }}
+
+- name: Update Draft Submission
+  uses: microsoft/store-submission@v1
+  with:
+    command: update
+    product-update: '{"packages":[{"packageUrl":"https://contoso.com/App.msi","languages":["en"],"architectures":["X64"],"isSilentInstall":true}]}'
+
+- name: Publish Submission
+  uses: microsoft/store-submission@v1
+  with:
+    command: publish
+```
+
+After:
+
+```yml
+- name: Set up MSStore CLI
+  uses: microsoft/microsoft-store-apppublisher@v1.4
+
+- name: Configure Store Credentials
+  run: >
+    msstore reconfigure
+    --tenantId ${{ secrets.TENANT_ID }}
+    --sellerId ${{ secrets.SELLER_ID }}
+    --clientId ${{ secrets.CLIENT_ID }}
+    --clientSecret ${{ secrets.CLIENT_SECRET }}
+
+- name: Update Draft Submission
+  run: >
+    msstore submission update ${{ secrets.PRODUCT_ID }}
+    '{"packages":[{"packageUrl":"https://contoso.com/App.msi","languages":["en"],"architectures":["X64"],"isSilentInstall":true}]}'
+
+- name: Publish Submission
+  run: msstore submission publish ${{ secrets.PRODUCT_ID }}
+```
+
+### Why migrate
+
+Beyond staying on a supported tool, the MSStore CLI also unblocks things this action never supported, including
+certificate-based and federated/managed-identity authentication (see
+[#20](https://github.com/microsoft/store-submission/issues/20)) instead of long-lived client secrets.
+
+### Reference implementation
+
+[`microsoft/PowerToys`](https://github.com/microsoft/PowerToys/blob/main/.github/workflows/msstore-submissions.yml)
+migrated from this action to the MSStore CLI and is a good production example to copy from.
+
+### More information
+
+* [MSStore CLI documentation](https://aka.ms/msstoredevcli/docs)
+* [`microsoft/microsoft-store-apppublisher`](https://github.com/microsoft/microsoft-store-apppublisher) (GitHub Action and Azure DevOps extension)
+* [`microsoft/msstore-cli`](https://github.com/microsoft/msstore-cli) (the CLI itself)
+
+---
 
 ## Quick start
 
@@ -56,6 +168,10 @@ The Product ID can be found by navigating to the overview of your application in
 This action allows you to publish your app on the Store by creating a submission in Partner Center.
 
 ## Sample
+
+> [!WARNING]
+> The sample below uses the deprecated `microsoft/store-submission` action.
+> For new workflows, see [Migrating to the MSStore CLI](#migrating-to-the-msstore-cli).
 
 ```yml
 name: CI
