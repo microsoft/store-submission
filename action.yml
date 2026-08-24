@@ -1,6 +1,6 @@
 name: 'Microsoft Store Publish'
 author: 'Microsoft'
-description: 'Submit a package to the Microsoft Store'
+description: '[DEPRECATED - use microsoft/microsoft-store-apppublisher instead] Submit a package to the Microsoft Store'
 branding:
   icon: 'upload-cloud'
   color: 'blue'
