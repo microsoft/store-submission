@@ -130,7 +130,7 @@ migrated from this action to the MSStore CLI and is a good production example to
 
 2. You must associate your Azure AD directory with your Partner Center account to obtain the credentials to allow this extension to access your account and perform actions on your behalf.
 
-3. The app you want to publish must already exist: this extension can only publish updates to existing applications. You can [create your app in Partner Center](https://msdn.microsoft.com/windows/uwp/publish/create-your-app-by-reserving-a-name).
+3. The app you want to publish must already exist: this extension can only publish updates to existing applications. You can [create your app in Partner Center]([https://msdn.microsoft.com/windows/uwp/publish/create-your-app-by-reserving-a-name](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msi/reserve-your-apps-name).
 
 4. You must have already [created at least one submission](https://msdn.microsoft.com/windows/uwp/publish/app-submissions) for your app before you can use the Publish task provided by this extension. If you have not created a submission, the task will fail.
 
