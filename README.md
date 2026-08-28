@@ -128,7 +128,7 @@ migrated from this action to the MSStore CLI and is a good production example to
 
 1. You must have an Azure AD directory, and you must have [global administrator permission](https://azure.microsoft.com/documentation/articles/active-directory-assign-admin-roles/) for the directory. You can create a new Azure AD [from Partner Center](https://msdn.microsoft.com/windows/uwp/publish/manage-account-users).
 
-2. You must associate your Azure AD directory with your Partner Center account to obtain the credentials to allow this extension to access your account and perform actions on your behalf.
+2. You must [associate your Azure AD directory with your Partner Center account](https://learn.microsoft.com/en-us/windows/apps/publish/partner-center/associate-existing-azure-ad-tenant-with-partner-center-account) to obtain the credentials to allow this extension to access your account and perform actions on your behalf.
 
 3. The app you want to publish must already exist: this extension can only publish updates to existing applications. You can [create your app in Partner Center](https://msdn.microsoft.com/windows/uwp/publish/create-your-app-by-reserving-a-name).
 
