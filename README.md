@@ -165,7 +165,7 @@ The Product ID can be found by navigating to the overview of your application in
 
 ### Microsoft Store Submission
 
-This action allows you to publish your app on the Store by creating a submission in Partner Center.
+This action allows you to publish your app on the Store by creating a submission in Partner Center. It also supports deleting existing submissions.
 
 ## Sample
 

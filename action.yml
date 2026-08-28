@@ -44,6 +44,10 @@ inputs:
   polling-submission-id:
     description: 'The Id of the active submission being processed'
     required: false
+  only-on-ready:
+    description: 'Only interact with the API when the module is ready to take on new submissions'
+    required: false
+    default: 'false'
 outputs:
   draft-submission:
     description: 'The existing draft of the product specified'
