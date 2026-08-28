@@ -25,6 +25,6 @@
   },
   "dependencies": {
     "@actions/core": "^1.9.1",
-    "azure-pipelines-task-lib": "^3.2.1"
+    "azure-pipelines-task-lib": "^3.3.1"
   }
 }
